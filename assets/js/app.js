@@ -58,18 +58,30 @@ database.ref().on("child_added", function (childSnapshot) {
     console.log("minutesSinceStart= " + minutesSinceStart + "frequency= " + frequency);
     // get the remainder of 'minutesSinceStart' divided by 'frequency' (if diff = 0 
     // then next train is due now / else the next train is due in 'diff' minutes
-    var remainder = minutesSinceStart % frequency;
-    console.log("remainder = " + remainder);
-    // if remainder = 0, (train due now) then nextTrainTime=0 , else nextTrainTime=(frequency-remainder)
-    var nextTrain = remainder ? frequency - remainder : 0;
-    console.log("nextTrain= " + nextTrain);
-    // creata a new date of now
-    var nextTrainTime = new Date();
-    // add the remaining mins (nextTrain) to nextTrainTime(time now) in a function addMinutes
-    nextTrainTime = addMinutes(nextTrainTime, nextTrain);
-    // set the seconds to 0 so that when train due now, it works!
-    nextTrainTime.setSeconds(0);
-    
+   var nextTrainTime="";
+   var nextTrain=0;
+    if (minutesSinceStart >= 0) {
+        var remainder = minutesSinceStart % frequency;
+        console.log("remainder = " + remainder);
+        // if remainder = 0, (train due now) then nextTrainTime=0 , else nextTrainTime=(frequency-remainder)
+        nextTrain = remainder ? frequency - remainder : 0;
+        console.log("nextTrain= " + nextTrain);
+        // creata a new date of now
+        nextTrainTime = new Date();
+        // add the remaining mins (nextTrain) to nextTrainTime(time now) in a function addMinutes
+        nextTrainTime = addMinutes(nextTrainTime, nextTrain);
+        // set the seconds to 0 so that when train due now, it works!
+        nextTrainTime.setSeconds(0);
+
+    }
+    // start time in future land
+    else if (minutesSinceStart < 0) {
+        console.log ("less than zero");
+        nextTrainTime = dateStart;
+        nextTrain = minutesSinceStart;
+
+    } ;
+
     console.log("nextTrainTime= " + nextTrainTime);
     // var dueTime=checkDate(dateStart);
     // full list of items to the well
@@ -77,7 +89,7 @@ database.ref().on("child_added", function (childSnapshot) {
     var td1 = $('<td>' + name + '</td>');
     var td2 = $('<td>' + destination + '</td>');
     var td3 = $('<td>' + frequency + '</td>');
-    var td4 = $('<td>' + nextTrainTime.getHours().toString() + ':' + (nextTrainTime.getMinutes()<10?'0':'') + nextTrainTime.getMinutes() + '</td>');
+    var td4 = $('<td>' + nextTrainTime.getHours().toString() + ':' + (nextTrainTime.getMinutes() < 10 ? '0' : '') + nextTrainTime.getMinutes() + '</td>');
     var td5 = $('<td>' + nextTrain + '</td>');
 
     varDiv.append(td1);
@@ -98,8 +110,8 @@ database.ref().on("child_added", function (childSnapshot) {
 function toDate(dStr) {
     var now = new Date();
     console.log("now= " + now);
-//    if start time is in future set 
-    if (dStr > now){
+    //    if start time is in future set 
+    if (dStr > now) {
 
     }
     now.setHours(dStr.substr(0, dStr.indexOf(":")));
