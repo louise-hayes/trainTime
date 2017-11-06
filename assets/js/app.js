@@ -25,11 +25,14 @@ $(document).ready(function () {
     $('body').on('click', '#add-Train', function (event) {
         var form = document.getElementById('needs-validation');
         if (form.checkValidity() === false) {
+            $("#errorDiv").html("Please populate all fields");
             console.log('failed validation');
             event.preventDefault();
             event.stopPropagation();
+
         } else {
             event.preventDefault();
+            $("#errorDiv").html("");
             name = $("#train-name").val().trim();
             destination = $("#destination").val().trim();
             startTime = $("#first-train-time").val().trim();
