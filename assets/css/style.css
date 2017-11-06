@@ -4,11 +4,9 @@
     text-align: center;
 }
 
-.panel-default>.panel-heading {
-    background-color: red!important;
-}
 
 .panel-default {
     background-color: lightgreen!important;
-    
+    padding:10px;
+    margin:10px;
 }

@@ -23,11 +23,18 @@ var frequency = 0;
 $(document).ready(function () {
     // form submit handler
     $('body').on('click', '#add-Train', function (event) {
+
         event.preventDefault();
         name = $("#train-name").val().trim();
         destination = $("#destination").val().trim();
         startTime = $("#first-train-time").val().trim();
         frequency = parseInt($("#train-frequency").val().trim());
+        $("#train-name").val("");
+        $("#destination").val("");
+        $("#first-train-time").val("");
+        $("#train-frequency").val("");
+        
+        
         // Code for handling the push
         database.ref().push({
             name: name,
@@ -36,17 +43,21 @@ $(document).ready(function () {
             frequency: frequency,
             dateAdded: firebase.database.ServerValue.TIMESTAMP
         });
+    
+    
+
     });
-});
+    
+
 
 
 // Firebase watcher + initial loader HINT: This code behaves similarly to .on("value")
 database.ref().on("child_added", function (childSnapshot) {
-
+    
     var name = childSnapshot.val().name;
     var destination = childSnapshot.val().destination;
     var startTime = (childSnapshot.val().startTime);
-    console.log("startTime= " + startTime);
+    console.log(name + " " + "startTime= " + startTime);
     var frequency = (childSnapshot.val().frequency);
 
     // set dateSTart to a date in function toDate
@@ -76,9 +87,9 @@ database.ref().on("child_added", function (childSnapshot) {
     }
     // start time in future land
     else if (minutesSinceStart < 0) {
-        console.log ("less than zero");
+        console.log ("less than zero so in the future so next train is start time");
         nextTrainTime = dateStart;
-        nextTrain = minutesSinceStart;
+        nextTrain = Math.abs(minutesSinceStart);
 
     } ;
 
@@ -105,8 +116,11 @@ database.ref().on("child_added", function (childSnapshot) {
     console.log("Errors handled: " + errorObject.code);
 });
 
+//////////////////functions
+
 // I believe this function changes the starttime to a date i.e. it takes the startTime from user input and returns a date object 
 // set to today with a time of user input startTime ...thank you stackoverflow!!!
+
 function toDate(dStr) {
     var now = new Date();
     console.log("now= " + now);
@@ -120,16 +134,6 @@ function toDate(dStr) {
     return now;
 }
 
-// function checkDate(dStr) {
-//     var now = new Date();
-//     console.log("now= " + now);
-// //    if start time is in future set due time to start time
-//     if (dStr > now){
-//         dueTime = dStr;
-//         return dueTime;
-//     };
-
-//     };
 
 // this function I believe takes the date/time as of now and 
 // adds the 'minutes' remaining until next train is due 
@@ -139,3 +143,4 @@ function toDate(dStr) {
 function addMinutes(date, minutes) {
     return new Date(date.getTime() + minutes * 60000);
 }
+});
