@@ -23,26 +23,32 @@ var frequency = 0;
 $(document).ready(function () {
     // form submit handler
     $('body').on('click', '#add-Train', function (event) {
-
-        event.preventDefault();
-        name = $("#train-name").val().trim();
-        destination = $("#destination").val().trim();
-        startTime = $("#first-train-time").val().trim();
-        frequency = parseInt($("#train-frequency").val().trim());
-        $("#train-name").val("");
-        $("#destination").val("");
-        $("#first-train-time").val("");
-        $("#train-frequency").val("");
-        
-        
-        // Code for handling the push
-        database.ref().push({
-            name: name,
-            destination: destination,
-            startTime: startTime,
-            frequency: frequency,
-            dateAdded: firebase.database.ServerValue.TIMESTAMP
-        });
+        var form = document.getElementById('needs-validation');
+        if (form.checkValidity() === false) {
+            console.log('failed validation');
+            event.preventDefault();
+            event.stopPropagation();
+        } else {
+            event.preventDefault();
+            name = $("#train-name").val().trim();
+            destination = $("#destination").val().trim();
+            startTime = $("#first-train-time").val().trim();
+            frequency = parseInt($("#train-frequency").val().trim());
+            $("#train-name").val("");
+            $("#destination").val("");
+            $("#first-train-time").val("");
+            $("#train-frequency").val("");
+            
+            
+            // Code for handling the push
+            database.ref().push({
+                name: name,
+                destination: destination,
+                startTime: startTime,
+                frequency: frequency,
+                dateAdded: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
     
     
 
